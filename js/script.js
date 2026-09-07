@@ -1,63 +1,81 @@
-console.log('script.js підключено успішно');
-
-
 const portfolioWorks = [
     {
         title: 'Студійний портрет «Warm Tones»',
         year: 2025,
-        category: 'Фотографія'
+        category: 'Фотографія',
+        image: 'assets/img/project1.jpg',
+        description: 'Мінімалістична студійна фотозйомка з фокусом на природність та теплу гаму кольорів.'
     },
     {
         title: 'Брендинг для локальної кав’ярні',
         year: 2026,
-        category: 'Дизайн'
+        category: 'Дизайн',
+        image: 'assets/img/project2.jpg',
+        description: 'Створення логотипа, кольорової палітри та друкованої продукції в мінімалістичному стилі.'
     },
     {
         title: 'Пейзажна зйомка «Полісся»',
         year: 2024,
-        category: 'Фотографія'
+        category: 'Фотографія',
+        image: 'assets/img/project3.jpg',
+        description: 'Дослідження природних ландшафтів та глибини кольорів української природи.'
     },
     {
         title: 'Ретро-серія чорно-білих фотографій',
         year: 2021,
-        category: 'Фотографія'
-    },
-    {
-        title: 'Айдентика архітектурного бюро',
-        year: 2022,
-        category: 'Дизайн'
+        category: 'Фотографія',
+        image: 'assets/img/project4.jpg',
+        description: 'Серія аналогових знімків на плівку з виразною грою світла й тіней.'
     }
 ];
 
-
 const isRecent = year => (2026 - year) <= 2;
 
-
-function displayWorksByCategory(works, targetCategory) {
-    console.log(`--- Список робіт за категорією: "${targetCategory}" ---`);
-
-    for (const work of works) {
-        if (work.category === targetCategory) {
-            const isOlderThan3Years = (2026 - work.year) > 3;
-
-            let ageStatus = '';
-            if (isOlderThan3Years) {
-                ageStatus = '[Архівна робота: старша 3 років]';
-            } else if (isRecent(work.year)) {
-                ageStatus = '[Свіжа робота: створена нещодавно]';
-            } else {
-                ageStatus = '[Актуальна робота]';
-            }
-
-            console.log(`Проєкт: "${work.title}" (${work.year} р.) ${ageStatus}`);
-        }
-    }
+const placeholder = document.querySelector('.placeholder-card');
+if (placeholder) {
+    placeholder.remove();
 }
 
-displayWorksByCategory(portfolioWorks, 'Фотографія');
-console.log('\n');
-displayWorksByCategory(portfolioWorks, 'Дизайн');
+const galleryContainer = document.querySelector('#gallery');
 
-console.log('\n--- Тестування стрілкової функції isRecent ---');
-console.log(`Чи є 2025 рік нещодавнім? -> ${isRecent(2025)}`);
-console.log(`Чи є 2021 рік нещодавнім? -> ${isRecent(2021)}`);
+function renderPortfolio(works) {
+    galleryContainer.innerHTML = '';
+
+    works.forEach(work => {
+        const card = document.createElement('article');
+        card.classList.add('card');
+
+        if (isRecent(work.year)) {
+            card.classList.add('recent');
+        }
+
+        const title = document.createElement('h3');
+        title.textContent = work.title;
+
+        const img = document.createElement('img');
+        img.src = work.image;
+        img.alt = `${work.title} - ${work.description}`;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.classList.add('card-content');
+
+        const yearParagraph = document.createElement('p');
+        yearParagraph.textContent = `Рік: ${work.year} | ${work.category}`;
+        yearParagraph.style.fontWeight = '500';
+
+        const descParagraph = document.createElement('p');
+        descParagraph.textContent = work.description;
+
+        contentDiv.append(yearParagraph, descParagraph);
+        card.append(title, img, contentDiv);
+
+        galleryContainer.append(card);
+    });
+}
+
+renderPortfolio(portfolioWorks);
+
+const counterElement = document.querySelector('#projects-count');
+if (counterElement) {
+    counterElement.textContent = `Усього робіт: ${portfolioWorks.length}`;
+}
